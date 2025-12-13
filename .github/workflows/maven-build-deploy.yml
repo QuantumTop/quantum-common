@@ -16,7 +16,7 @@ on:
       maven-options:
         description: 'Additional Maven options'
         required: false
-        default: ''
+        default: '-T 2C'
         type: string
       working-directory:
         description: 'Working directory for the Maven project'
@@ -63,7 +63,7 @@ on:
       maven-options:
         description: 'Additional Maven options'
         required: false
-        default: ''
+        default: '-T 2C'
         type: string
       working-directory:
         description: 'Working directory for the Maven project'
