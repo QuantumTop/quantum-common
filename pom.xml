@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.lunarstra.quantum</groupId>
         <artifactId>quantum-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath/>
     </parent>
 
     <artifactId>quantum-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <packaging>pom</packaging>
     <modules>
         <module>quantum-common-core</module>
@@ -23,6 +25,14 @@
         <module>quantum-common-satoken</module>
         <module>quantum-common-ai</module>
     </modules>
-
+    <!-- 配置发布仓库 -->
+    <distributionManagement>
+        <repository>
+            <!-- 须与 settings.xml 中 server 的 id 一致 -->
+            <id>lunarstra-quantum</id>
+            <name>lunarstra-quantum</name>
+            <url>https://maven.cnb.cool/lunarstra/Quantum/-/packages/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
