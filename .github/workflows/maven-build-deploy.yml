@@ -106,7 +106,7 @@ on:
 
 jobs:
   parent-deploy:
-    uses: lunarstra/QuantumTop/.github/workflows/maven-build-deploy.yml@main
+    uses: gyyst/QuantumTop/.github/workflows/maven-build-deploy.yml@main
     with:
       java-version: ${{ inputs.java-version }}
       distribution: ${{ inputs.distribution }}
