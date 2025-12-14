@@ -162,7 +162,7 @@ jobs:
       built-modules: ${{ needs.quantum-parent-deploy.outputs.built-modules }}
     secrets:
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-  build-deploy:
+  quantum-commmon-deploy:
     needs: quantum-lib-deploy
     runs-on: ubuntu-latest
     outputs:
