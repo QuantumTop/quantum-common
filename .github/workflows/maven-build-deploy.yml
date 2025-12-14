@@ -48,7 +48,7 @@ on:
         required: false
         default: 'lunarstra-quantum'
         type: string
-      repository-path:
+      repository-module:
         description: 'Maven repository path'
         required: false
         default: 'QuantumTop/quantum-common'
@@ -105,7 +105,7 @@ on:
         required: false
         default: 'cnb'
         type: string
-      repository-path:
+      repository-module:
         description: 'Maven repository path'
         required: false
         default: 'QuantumTop/quantum-common'
@@ -146,9 +146,24 @@ jobs:
       built-modules: ${{ inputs.built-modules }}
     secrets:
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-
-  build-deploy:
+  quantum-lib-deploy:
     needs: quantum-parent-deploy
+    uses: QuantumTop/quantum-lib/.github/workflows/maven-build-deploy.yml@main
+    with:
+      java-version: ${{ inputs.java-version }}
+      distribution: ${{ inputs.distribution }}
+      maven-options: ${{ inputs.maven-options }}
+      working-directory: ${{ inputs.working-directory }}
+      skip-tests: ${{ inputs.skip-tests }}
+      maven-username: ${{ inputs.maven-username }}
+      server-id: ${{ inputs.server-id }}
+      repository-url: ${{ inputs.repository-url }}
+      profile-id: ${{ inputs.profile-id }}
+      built-modules: ${{ needs.quantum-parent-deploy.outputs.built-modules }}
+    secrets:
+      MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+  build-deploy:
+    needs: quantum-lib-deploy
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.get-version.outputs.version }}
@@ -160,7 +175,7 @@ jobs:
         id: check-if-built
         run: |
           MODULE_NAME="quantum-common"
-          BUILT_MODULES="${{ needs.quantum-parent-deploy.outputs.built-modules }}"
+          BUILT_MODULES="${{ needs.quantum-lib-deploy.outputs.built-modules }}"
           
           if [[ ",$BUILT_MODULES," == *",$MODULE_NAME,"* ]]; then
             echo "⏭️  Module '$MODULE_NAME' already built, skipping..."
@@ -174,7 +189,7 @@ jobs:
         if: steps.check-if-built.outputs.skipped == 'false'
         uses: actions/checkout@v4
         with:
-          repository: ${{ inputs.repository-path }}
+          repository: ${{ inputs.repository-module }}
           ref: ${{ github.ref }}
 
       - name: Set up JDK ${{ inputs.java-version }}
