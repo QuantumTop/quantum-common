@@ -122,13 +122,13 @@ on:
     outputs:
       artifact-version:
         description: 'Version of the deployed artifact'
-        value: ${{ jobs.build-deploy.outputs.version }}
+        value: ${{ jobs.quantum-common-deploy.outputs.version }}
       built-modules:
         description: 'Updated list of built modules'
-        value: ${{ jobs.build-deploy.outputs.built-modules }}
+        value: ${{ jobs.quantum-common-deploy.outputs.built-modules }}
       skipped:
         description: 'Whether this module was skipped'
-        value: ${{ jobs.build-deploy.outputs.skipped }}
+        value: ${{ jobs.quantum-common-deploy.outputs.skipped }}
 
 jobs:
   quantum-parent-deploy:
@@ -146,6 +146,7 @@ jobs:
       built-modules: ${{ inputs.built-modules }}
     secrets:
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
+
   quantum-lib-deploy:
     needs: quantum-parent-deploy
     uses: QuantumTop/quantum-lib/.github/workflows/maven-build-deploy.yml@main
@@ -162,7 +163,8 @@ jobs:
       built-modules: ${{ needs.quantum-parent-deploy.outputs.built-modules }}
     secrets:
       MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
-  quantum-commmon-deploy:
+
+  quantum-common-deploy:
     needs: quantum-lib-deploy
     runs-on: ubuntu-latest
     outputs:
@@ -304,8 +306,8 @@ jobs:
       - name: Update built modules list
         id: update-built-modules
         run: |
-          MODULE_NAME="quantum-common"
-          BUILT_MODULES="${{ needs.quantum-parent-deploy.outputs.built-modules }}"
+          MODULE_NAME="${{inputs.repository-module}}"
+          BUILT_MODULES="${{ needs.quantum-lib-deploy.outputs.built-modules }}"  # 🔧 修复：使用 lib 的输出而不是 parent 的
           
           if [ "${{ steps.check-if-built.outputs.skipped }}" == "false" ]; then
             # Add current module to the list
